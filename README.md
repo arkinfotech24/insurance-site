@@ -106,3 +106,4 @@ Insurance website deployed successfully.
 [Pipeline] End of Pipeline
 Finished: SUCCESS
 ```
+<img width="1909" height="912" alt="image" src="https://github.com/user-attachments/assets/c507b452-20cb-4a87-9ace-bd26136d8695" />
