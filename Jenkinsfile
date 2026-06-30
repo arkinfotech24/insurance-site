@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DEPLOY_USER = 'sysadmin'
-        DEPLOY_HOST = '192.168.1.181'
+        DEPLOY_HOST = 'insurance.lab.local'
         DEPLOY_PATH = '/var/www/html'
         SSH_KEY = '/var/jenkins_home/.ssh/insurance_deploy_key'
     }
