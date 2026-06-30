@@ -9,7 +9,6 @@ pipeline {
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -19,16 +18,9 @@ pipeline {
         stage('Validate Files') {
             steps {
                 sh '''
-                echo "======================================"
-                echo "Validating project files..."
-                echo "======================================"
-
                 pwd
                 ls -la
-
                 test -f index.html
-
-                echo "Validation successful."
                 '''
             }
         }
@@ -36,12 +28,7 @@ pipeline {
         stage('Verify SSH Key') {
             steps {
                 sh '''
-                echo "======================================"
-                echo "Checking SSH key..."
-                echo "======================================"
-
                 ls -l ${SSH_KEY}
-
                 chmod 600 ${SSH_KEY}
                 '''
             }
@@ -50,25 +37,31 @@ pipeline {
         stage('Deploy to Web Server') {
             steps {
                 sh '''
-                echo "======================================"
                 echo "Deploying Insurance Website..."
-                echo "======================================"
 
                 scp \
-                    -i ${SSH_KEY} \
-                    -o IdentitiesOnly=yes \
-                    -o StrictHostKeyChecking=no \
-                    index.html \
-                    ${DEPLOY_USER}@${DEPLOY_HOST}:/tmp/index.html
+                  -F /dev/null \
+                  -i ${SSH_KEY} \
+                  -o IdentityAgent=none \
+                  -o IdentitiesOnly=yes \
+                  -o PreferredAuthentications=publickey \
+                  -o PubkeyAuthentication=yes \
+                  -o PasswordAuthentication=no \
+                  -o StrictHostKeyChecking=no \
+                  index.html \
+                  ${DEPLOY_USER}@${DEPLOY_HOST}:/tmp/index.html
 
                 ssh \
-                    -i ${SSH_KEY} \
-                    -o IdentitiesOnly=yes \
-                    -o StrictHostKeyChecking=no \
-                    ${DEPLOY_USER}@${DEPLOY_HOST} \
-                    "sudo cp /tmp/index.html ${DEPLOY_PATH}/index.html && sudo systemctl restart httpd"
-
-                echo "Deployment completed successfully."
+                  -F /dev/null \
+                  -i ${SSH_KEY} \
+                  -o IdentityAgent=none \
+                  -o IdentitiesOnly=yes \
+                  -o PreferredAuthentications=publickey \
+                  -o PubkeyAuthentication=yes \
+                  -o PasswordAuthentication=no \
+                  -o StrictHostKeyChecking=no \
+                  ${DEPLOY_USER}@${DEPLOY_HOST} \
+                  "sudo cp /tmp/index.html ${DEPLOY_PATH}/index.html && sudo systemctl restart httpd"
                 '''
             }
         }
@@ -76,15 +69,11 @@ pipeline {
 
     post {
         success {
-            echo "======================================"
-            echo "Insurance website deployed successfully."
-            echo "======================================"
+            echo 'Insurance website deployed successfully.'
         }
 
         failure {
-            echo "======================================"
-            echo "Deployment failed."
-            echo "======================================"
+            echo 'Deployment failed.'
         }
 
         always {
